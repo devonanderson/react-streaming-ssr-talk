@@ -36,14 +36,17 @@ export default async function Home() {
       <section className="p-8">
         <h2 className="font-body font-bold text-4xl mb-4">Good Morning/Afternoon</h2>
         <Suspense fallback={<SuspenseEntityList gridSize={3} count={6}/>}>
+          {/* @ts-expect-error Server Component */}
           <EntityList dataPromise={recentlyPlayedSongs}/>
         </Suspense>
         <h3 className="font-body font-bold text-2xl mt-[40px] mb-4">Artist Recommendations</h3>
         <Suspense fallback={<SuspenseEntityList gridSize={3} count={6}/>}>
+          {/* @ts-expect-error Server Component */}
           <EntityList dataPromise={recommendedArtists} />
         </Suspense>
         <h3 className="font-body font-bold text-2xl mt-[40px] mb-4">Recommended Playlists</h3>
         <Suspense fallback={<SuspenseEntityList gridSize={3} count={6}/>}>
+          {/* @ts-expect-error Server Component */}
           <EntityList dataPromise={recommendedPlaylists} />
         </Suspense>
       </section>
