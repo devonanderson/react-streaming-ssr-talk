@@ -1,91 +1,52 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
+import { Suspense } from "react";
+import fetchWithDelay from "./_utils/fetch-with-delay";
+import getSpotifyAccessToken from "./_utils/get-spotify-token";
+import EntityList from "./_components/EntityList";
+import SuspenseEntityList from "./_components/SuspenseEntityList";
 
-const inter = Inter({ subsets: ['latin'] })
+async function getRecentlyPlayedSongs() {
+  const accessToken = await getSpotifyAccessToken();
+  const res = await fetchWithDelay("https://api.spotify.com/v1/tracks?ids=7rL602DQps4QmrrjbinLzP,4qw2e5hEBSQZvu6NEbkuJh,3UBUSMQXobHQMXkKsv9dgy,3h2CkNuAKSxZXWGElwcOvH,6TZ6vaiyYeMZzPef9hvnZL,73ptateUzEZc4xXGWlQpaa", { headers: { Authorization: `Bearer ${accessToken}` } }, 4000);
+  const data = await res.json();
+  return data.tracks;
+}
 
-export default function Home() {
+async function getRecommendedArtists() {
+  const accessToken = await getSpotifyAccessToken();
+  const res = await fetchWithDelay("https://api.spotify.com/v1/artists?ids=0C0XlULifJtAgn6ZNCW2eu,3kjuyTCjPG1WMFCiyc5IuB,2cCUtGK9sDU2EoElnk0GNB,3WaJSfKnzc65VDgmj2zU8B,1yAwtBaoHLEDWAnWR87hBT,3qkZBMz5JgmRN9u5wwhRC6", { headers: { Authorization: `Bearer ${accessToken}` } }, 10000);
+  const data = await res.json();
+  return data.artists;
+}
+
+async function getRecommendedPlaylists() {
+  const accessToken = await getSpotifyAccessToken();
+  const res = await fetchWithDelay("https://api.spotify.com/v1/browse/categories/0JQ5DAqbMKFCWjUTdzaG0e/playlists?limit=6", { headers: { Authorization: `Bearer ${accessToken}` } }, 8000);
+  const data = await res.json();
+  return data.playlists.items;
+}
+
+export default async function Home() {
+
+  const recentlyPlayedSongs = getRecentlyPlayedSongs();
+  const recommendedArtists = getRecommendedArtists();
+  const recommendedPlaylists = getRecommendedPlaylists();
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <>
+      <section className="p-8">
+        <h2 className="font-body font-bold text-4xl mb-4">Good Morning/Afternoon</h2>
+        <Suspense fallback={<SuspenseEntityList gridSize={3} count={6}/>}>
+          <EntityList dataPromise={recentlyPlayedSongs}/>
+        </Suspense>
+        <h3 className="font-body font-bold text-2xl mt-[40px] mb-4">Artist Recommendations</h3>
+        <Suspense fallback={<SuspenseEntityList gridSize={3} count={6}/>}>
+          <EntityList dataPromise={recommendedArtists} />
+        </Suspense>
+        <h3 className="font-body font-bold text-2xl mt-[40px] mb-4">Recommended Playlists</h3>
+        <Suspense fallback={<SuspenseEntityList gridSize={3} count={6}/>}>
+          <EntityList dataPromise={recommendedPlaylists} />
+        </Suspense>
+      </section>
+    </>
   )
 }
