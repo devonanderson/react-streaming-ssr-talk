@@ -1,3 +1,7 @@
+/**
+ * Returns a Spotify access token
+ * @returns {Promise<any>}
+ */
 export default async function getSpotifyAccessToken(): Promise<any> {
   const encodedAuthToken = Buffer.from(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET).toString('base64');
   const authOptions = {
