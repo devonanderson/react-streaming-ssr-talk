@@ -1,5 +1,10 @@
 import EntityCard from './EntityCard';
 
+/**
+ * A list of Spotify entities
+ * @param dataPromise - Promise that resolves to an array of entities 
+ * @returns {Promise<JSX.Element>}
+ */
 export default async function EntityList({ dataPromise }: { dataPromise: Promise<Array<any>> }): Promise<JSX.Element> {
   const entities = await dataPromise;
   return (

@@ -2,6 +2,11 @@
 
 import Image from 'next/image'
 
+/**
+ * A single Spotify entity card
+ * @param entity - Spotify entity
+ * @returns {JSX.Element}
+ */
 export default function EntityCard({ entity }: { entity: any }): JSX.Element {
   return (
     <li className="bg-[#333333] rounded-md overflow-hidden">

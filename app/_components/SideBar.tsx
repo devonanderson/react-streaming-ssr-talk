@@ -2,9 +2,12 @@ import { BeakerIcon, HomeIcon, MagnifyingGlassCircleIcon, ViewColumnsIcon } from
 import { useRef } from 'react';
 import SideBarButton from './SideBarButton';
 
+/**
+ * The app sidebar
+ * @returns {JSX.Element}
+ */
 export default function SideBar() {
   
-
   return (
     <aside className="flex h-100vh flex-col p-8 bg-black">
       <h1 className="font-title font-bold text-3xl flex items-center mb-[72px]">

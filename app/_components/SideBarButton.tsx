@@ -2,6 +2,11 @@
 
 import { useRef } from "react";
 
+/**
+ * Button used to illustrate selective hydration
+ * @param children - The button's children 
+ * @returns {JSX.Element}
+ */
 export default function SideBarButton({ children }: { children: any }): JSX.Element {
   const spanRef = useRef<HTMLInputElement>(null);
 
